@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2.5次元歌い手推し活のセカイ - 画面越しの声が、日常を照らす。</title>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        /* =========================================
+           CSS Variables (テーマカラー設定)
+           ========================================= */
+        :root {
+            --color-pink: #ff8fb3;
+            --color-purple: #b388ff;
+            --color-blue: #80d8ff;
+            --color-bg-gray: #f9fafb;
+            --color-text-main: #1f2937;
+            --color-text-muted: #4b5563;
+            --color-white: #ffffff;
+            --font-main: '"M PLUS Rounded 1c"', sans-serif;
+        }
+
+        /* =========================================
+           Reset & Base Styles
+           ========================================= */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        html {
+            scroll-behavior: smooth;
+        }
+        body {
+            font-family: var(--font-main);
+            background-color: var(--color-bg-gray);
+            color: var(--color-text-main);
+            line-height: 1.6;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+        img, svg {
+            display: block;
+        }
+        .container {
+            max-width: 1152px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* =========================================
+           Typography & Utils
+           ========================================= */
+        .gradient-text {
+            background: linear-gradient(135deg, var(--color-pink), var(--color-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: inline-block;
+        }
+        .br-desktop { display: none; }
+
+        /* =========================================
+           Navigation
+           ========================================= */
+        .navbar {
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 50;
+            height: 64px;
+            transition: all 0.3s ease;
+        }
+        .navbar.glass {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .navbar.scrolled {
+            background: var(--color-white);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        .nav-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 100%;
+        }
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1.25rem;
+            font-weight: 700;
+            transition: opacity 0.2s;
+        }
+        .nav-brand:hover {
+            opacity: 0.8;
+        }
+        .nav-brand i { color: var(--color-pink); }
+        
+        .nav-links {
+            display: flex;
+            gap: 32px;
+        }
+        .nav-links a {
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+        .nav-links a:nth-child(1):hover { color: var(--color-pink); }
+        .nav-links a:nth-child(2):hover { color: var(--color-purple); }
+        .nav-links a:nth-child(3):hover { color: var(--color-blue); }
+        .nav-links a:nth-child(4):hover { color: var(--color-pink); }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--color-text-muted);
+        }
+        
+        .mobile-menu {
+            display: none;
+            position: absolute;
+            top: 64px;
+            left: 0;
+            width: 100%;
+            background: var(--color-white);
+            border-top: 1px solid #f3f4f6;
+            flex-direction: column;
+            padding: 8px 0;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        .mobile-menu.active { display: flex; }
+        .mobile-menu a {
+            padding: 12px 24px;
+            font-weight: 500;
+            color: var(--color-text-main);
+        }
+        .mobile-menu a:hover {
+            background: var(--color-bg-gray);
+            color: var(--color-pink);
+        }
+
+        /* =========================================
+           Hero Section
+           ========================================= */
+        .hero {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding-top: 64px;
+            overflow: hidden;
+        }
+        .hero-bg {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, #fce7f3 0%, #f3e8ff 50%, #e0f2fe 100%);
+            opacity: 0.8;
+            z-index: 0;
+        }
+        .hero-content {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            max-width: 800px;
+            padding: 0 20px;
+            animation: fadeInUp 0.8s ease-out forwards;
+        }
+        .hero-badge {
+            display: inline-block;
+            padding: 4px 16px;
+            border-radius: 999px;
+            background: var(--color-white);
+            color: var(--color-pink);
+            font-size: 0.875rem;
+            font-weight: 700;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+            margin-bottom: 24px;
+        }
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 24px;
+        }
+        .hero-desc {
+            font-size: 1.125rem;
+            color: var(--color-text-muted);
+            margin-bottom: 40px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .btn-primary {
+            display: inline-block;
+            padding: 16px 32px;
+            background: #111827;
+            color: var(--color-white);
+            border-radius: 999px;
+            font-weight: 700;
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+            transition: all 0.2s;
+        }
+        .btn-primary:hover {
+            background: #1f2937;
+            transform: translateY(-2px);
+        }
+        
+        .floating-icon { position: absolute; opacity: 0.5; animation: bounceSlow 3s infinite; }
+        .icon-1 { top: 25%; left: 10%; color: var(--color-pink); animation-delay: 0s; }
+        .icon-2 { bottom: 25%; right: 10%; color: var(--color-purple); animation-delay: 1s; }
+        .icon-3 { top: 33%; right: 25%; color: var(--color-blue); animation-delay: 0.5s; }
+
+        .scroll-down {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: bounce 2s infinite;
+            color: #9ca3af;
+            transition: color 0.2s;
+        }
+        .scroll-down:hover { color: var(--color-text-muted); }
+
+        /* =========================================
+           Sections Common
+           ========================================= */
+        .section { padding: 96px 0; }
+        .bg-white { background-color: var(--color-white); }
+        
+        .section-header {
+            text-align: center;
+            margin-bottom: 64px;
+        }
+        .section-title {
+            font-size: 2.25rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+        .section-subtitle {
+            color: var(--color-text-muted);
+            margin-bottom: 24px;
+        }
+        .section-line {
+            width: 64px;
+            height: 4px;
+            border-radius: 2px;
+            margin: 0 auto;
+        }
+        .line-pink { background: var(--color-pink); }
+        .line-purple { background: var(--color-purple); }
+        .line-blue { background: var(--color-blue); }
+
+        /* =========================================
+           About Section
+           ========================================= */
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 48px;
+            align-items: center;
+        }
+        .about-visual {
+            aspect-ratio: 16 / 9;
+            background: linear-gradient(to top right, #fbcfe8, #ffedd5);
+            border-radius: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.06);
+        }
+        .about-visual-bg {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0.2;
+            transition: transform 0.7s;
+        }
+        .about-visual:hover .about-visual-bg { transform: scale(1.1); }
+        .about-visual-bg svg { width: 256px; height: 256px; color: #ec4899; }
+        
+        .about-card {
+            position: relative;
+            z-index: 10;
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(4px);
+            padding: 24px;
+            border-radius: 16px;
+            text-align: center;
+        }
+        .about-card h3 { font-size: 1.5rem; margin-bottom: 8px; }
+        .about-card p { font-size: 0.875rem; color: var(--color-text-muted); }
+
+        .about-text h3 { font-size: 1.5rem; margin-bottom: 16px; line-height: 1.4; }
+        .about-text p { color: var(--color-text-muted); margin-bottom: 24px; }
+        
+        .tags { display: flex; flex-wrap: wrap; gap: 12px; }
+        .tag { padding: 8px 16px; border-radius: 999px; font-size: 0.875rem; font-weight: 500; }
+        .tag-pink { background: #fdf2f8; color: #be185d; }
+        .tag-purple { background: #faf5ff; color: #7e22ce; }
+        .tag-blue { background: #eff6ff; color: #1d4ed8; }
+        .tag-green { background: #f0fdf4; color: #15803d; }
+
+        /* =========================================
+           Benefits Section
+           ========================================= */
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 32px;
+        }
+        .benefit-card {
+            background: var(--color-white);
+            padding: 32px;
+            border-radius: 24px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+        }
+        .benefit-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
+        }
+        .benefit-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 24px;
+        }
+        .icon-bg-pink { background: #fce7f3; color: #ec4899; }
+        .icon-bg-purple { background: #f3e8ff; color: #a855f7; }
+        .icon-bg-blue { background: #e0f2fe; color: #3b82f6; }
+        
+        .benefit-card h3 { font-size: 1.25rem; margin-bottom: 12px; }
+        .benefit-card p { font-size: 0.875rem; color: var(--color-text-muted); }
+
+        /* =========================================
+           Misconceptions (FAQ) Section
+           ========================================= */
+        .faq-list {
+            max-width: 800px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+        .faq-item {
+            border: 1px solid #e5e7eb;
+            border-radius: 16px;
+            padding: 24px;
+            transition: border-color 0.3s;
+        }
+        .faq-item:nth-child(1):hover { border-color: var(--color-blue); }
+        .faq-item:nth-child(2):hover { border-color: var(--color-pink); }
+        .faq-item:nth-child(3):hover { border-color: var(--color-purple); }
+        
+        .faq-title {
+            display: flex;
+            align-items: center;
+            font-size: 1.125rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+        .faq-title i { margin-right: 8px; }
+        .faq-item:nth-child(1) .faq-title i { color: #3b82f6; }
+        .faq-item:nth-child(2) .faq-title i { color: #ec4899; }
+        .faq-item:nth-child(3) .faq-title i { color: #a855f7; }
+
+        .faq-answer {
+            color: var(--color-text-muted);
+            padding-left: 32px;
+            border-left: 4px solid;
+        }
+        .faq-item:nth-child(1) .faq-answer { border-color: #e0f2fe; }
+        .faq-item:nth-child(2) .faq-answer { border-color: #fce7f3; }
+        .faq-item:nth-child(3) .faq-answer { border-color: #f3e8ff; }
+
+        /* =========================================
+           Howto Section
+           ========================================= */
+        .howto-section {
+            position: relative;
+            background: #111827;
+            color: var(--color-white);
+            padding: 96px 0;
+            overflow: hidden;
+            text-align: center;
+        }
+        .howto-pattern {
+            position: absolute;
+            inset: 0;
+            background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxwYXRoIGQ9Ik0zNiAzNHYtNGgtMnY0aC00djJoNHY0aDJ2LTRoNHYtMmgtNHptMC0zMFYwaC0ydjRoLTR2Mmg0djRoMnYtNGg0VjRoLTR6TTM2IDY0di00aC0ydjRoLTR2Mmg0djRoMnYtNGg0di0yaC00ek0xOCAxOHYtNGgtMnY0aC00djJoNHY0aDJ2LTRoNHYtMmgtNHptMCAzMHYtNGgtMnY0aC00djJoNHY0aDJ2LTRoNHYtMmgtNHoiIGZpbGw9IiM5Y2EyYWIiIGZpbGwtb3BhY2l0eT0iMC4wNSIvPjwvZz48L3N2Zz4=');
+            opacity: 0.5;
+            z-index: 0;
+        }
+        .howto-content {
+            position: relative;
+            z-index: 10;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        .howto-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 24px;
+        }
+        .howto-desc {
+            font-size: 1.125rem;
+            color: #d1d5db;
+            margin-bottom: 40px;
+        }
+        
+        .steps {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+        .step-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 16px;
+            padding: 24px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            text-align: left;
+            flex: 1;
+            min-width: 250px;
+        }
+        .step-num {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+        .num-pink { background: #ec4899; }
+        .num-purple { background: #a855f7; }
+        .num-blue { background: #3b82f6; }
+        
+        .step-text h4 { font-size: 1.125rem; margin-bottom: 4px; }
+        .step-text p { font-size: 0.875rem; color: #9ca3af; }
+        
+        .howto-msg {
+            margin-top: 48px;
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+
+        /* =========================================
+           Footer
+           ========================================= */
+        .footer {
+            background: #111827;
+            color: #9ca3af;
+            padding: 48px 0;
+            border-top: 1px solid #1f2937;
+            text-align: center;
+        }
+        .footer-brand {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--color-white);
+            margin-bottom: 24px;
+        }
+        .footer-brand i { color: var(--color-pink); }
+        .footer-desc { margin-bottom: 24px; font-size: 0.875rem; }
+        .footer-socials {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+        .footer-socials a { transition: color 0.2s; }
+        .footer-socials a:hover { color: var(--color-white); }
+        .footer-copy { font-size: 0.75rem; }
+
+        /* =========================================
+           Animations
+           ========================================= */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease-out;
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(-25%); animation-timing-function: cubic-bezier(0.8,0,1,1); }
+            50% { transform: none; animation-timing-function: cubic-bezier(0,0,0.2,1); }
+        }
+        @keyframes bounceSlow {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        /* =========================================
+           Media Queries (Responsive)
+           ========================================= */
+        @media (min-width: 768px) {
+            .br-desktop { display: inline; }
+            .hero-title { font-size: 4rem; }
+            .howto-title { font-size: 3rem; }
+        }
+        
+        @media (max-width: 767px) {
+            .nav-links { display: none; }
+            .mobile-menu-btn { display: block; }
+            
+            .hero-title { font-size: 2.25rem; }
+            .hero-desc { font-size: 1rem; }
+            
+            .about-grid { grid-template-columns: 1fr; }
+            .benefits-grid { grid-template-columns: 1fr; }
+            
+            .steps { flex-direction: column; }
+            
+            .section { padding: 64px 0; }
+            .section-title { font-size: 1.75rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar glass" id="navbar">
+        <div class="container">
+            <div class="nav-content">
+                <a href="#" class="nav-brand">
+                    <i data-lucide="headphones"></i>
+                    <span>2.5次元推し活のセカイ</span>
+                </a>
+                <div class="nav-links">
+                    <a href="#about">2.5次元グループとは？</a>
+                    <a href="#benefits">2.5次元推しの魅力</a>
+                    <a href="#misconceptions">よくある誤解</a>
+                    <a href="#howto">始め方</a>
+                </div>
+                <!-- Mobile menu button -->
+                <button id="mobile-menu-btn" class="mobile-menu-btn" aria-label="Menu">
+                    <i data-lucide="menu"></i>
+                </button>
+            </div>
+        </div>
+        <!-- Mobile menu panel -->
+        <div id="mobile-menu" class="mobile-menu">
+            <a href="#about">2.5次元グループとは？</a>
+            <a href="#benefits">2.5次元推しの魅力</a>
+            <a href="#misconceptions">よくある誤解</a>
+            <a href="#howto">始め方</a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-bg"></div>
+        
+        <!-- Floating decorative elements -->
+        <div class="floating-icon icon-1"><i data-lucide="mic-vocal" width="48" height="48"></i></div>
+        <div class="floating-icon icon-2"><i data-lucide="headphones" width="64" height="64"></i></div>
+        <div class="floating-icon icon-3"><i data-lucide="music" width="40" height="40"></i></div>
+
+        <div class="hero-content">
+            <span class="hero-badge">Welcome to 2.5D Utaite World</span>
+            <h1 class="hero-title">
+                画面越しから届く声が、<br class="br-desktop" />
+                <span class="gradient-text">私の日常を照らす。</span>
+            </h1>
+            <p class="hero-desc">
+                「2.5次元歌い手グループ」の推し活。<br>
+                2次元の親しみやすさと、3次元のリアルな熱量。彼らの歌声と楽しい配信が、何気ない毎日を特別なものに変えてくれます。
+            </p>
+            <a href="#about" class="btn-primary">2.5次元推し活を知る</a>
+        </div>
+        
+        <a href="#about" class="scroll-down" aria-label="Scroll down">
+            <i data-lucide="chevron-down" width="32" height="32"></i>
+        </a>
+    </section>
+
+    <!-- What is Oshikatsu? -->
+    <section id="about" class="section bg-white">
+        <div class="container">
+            <div class="section-header reveal">
+                <h2 class="section-title">2.5次元歌い手グループとは？</h2>
+                <div class="section-line line-pink"></div>
+            </div>
+
+            <div class="about-grid">
+                <div class="reveal">
+                    <div class="about-visual">
+                         <div class="about-visual-bg">
+                             <i data-lucide="mic-vocal"></i>
+                         </div>
+                         <div class="about-card">
+                             <h3>2次元と3次元を<br>行き来する存在</h3>
+                             <p>イラストとリアル、両方の魅力</p>
+                         </div>
+                    </div>
+                </div>
+                <div class="about-text reveal" style="transition-delay: 100ms;">
+                    <h3>ネット発信からリアルライブまで<br>活動の幅は無限大！</h3>
+                    <p>
+                        普段は魅力的な「イラスト（2次元）」の姿で、YouTubeやツイキャスなどで「歌ってみた」動画の投稿や、ゲーム実況・雑談などの生配信を行います。
+                    </p>
+                    <p>
+                        しかし、実際のライブイベント（3次元）では、リアルな姿でステージに立ち、熱い歌とダンスのパフォーマンスを披露します。この「2つの世界」を併せ持つのが最大の魅力です！
+                    </p>
+                    <div class="tags">
+                        <span class="tag tag-pink">#歌ってみた</span>
+                        <span class="tag tag-purple">#生配信</span>
+                        <span class="tag tag-blue">#ゲーム実況</span>
+                        <span class="tag tag-green">#リアルライブ</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Benefits / Appeal -->
+    <section id="benefits" class="section">
+        <div class="container">
+            <div class="section-header reveal">
+                <h2 class="section-title">2.5次元推し活ならではの魅力</h2>
+                <p class="section-subtitle">歌声と楽しいトークが、日々の生活に元気をくれます。</p>
+                <div class="section-line line-purple"></div>
+            </div>
+
+            <div class="benefits-grid">
+                <!-- Benefit 1 -->
+                <div class="benefit-card reveal">
+                    <div class="benefit-icon icon-bg-pink">
+                        <i data-lucide="radio" width="28" height="28"></i>
+                    </div>
+                    <h3>毎日の配信が生きがいに</h3>
+                    <p>
+                        グループや個人での生配信が頻繁にあるため、コメントを通じてリアルタイムにコミュニケーションが取れます。「今日も配信があるから頑張ろう！」と日々の活力が生まれます。
+                    </p>
+                </div>
+
+                <!-- Benefit 2 -->
+                <div class="benefit-card reveal" style="transition-delay: 100ms;">
+                    <div class="benefit-icon icon-bg-purple">
+                        <i data-lucide="sparkles" width="28" height="28"></i>
+                    </div>
+                    <h3>最高の「ギャップ萌え」</h3>
+                    <p>
+                        普段の配信ではワチャワチャと面白くて親しみやすいのに、歌動画やライブステージになると圧倒的にかっこいい。そんな「ギャップ」に一度ハマると抜け出せません。
+                    </p>
+                </div>
+
+                <!-- Benefit 3 -->
+                <div class="benefit-card reveal" style="transition-delay: 200ms;">
+                    <div class="benefit-icon icon-bg-blue">
+                        <i data-lucide="users" width="28" height="28"></i>
+                    </div>
+                    <h3>一緒に成長の軌跡を歩める</h3>
+                    <p>
+                        ネットの小さな配信から始まり、武道館やドームといった大きなステージへ。リスナー（ファン）と推しが団結して夢を叶えていく過程を、一番近くで応援できます。
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Misconceptions (FAQ format) -->
+    <section id="misconceptions" class="section bg-white">
+        <div class="container">
+            <div class="section-header reveal">
+                <h2 class="section-title">2.5次元グループの「よくある誤解」</h2>
+                <div class="section-line line-blue"></div>
+            </div>
+
+            <div class="faq-list">
+                <!-- FAQ 1 -->
+                <div class="faq-item reveal">
+                    <h3 class="faq-title">
+                        <i data-lucide="help-circle" width="24" height="24"></i>
+                        ただのアニメキャラクターなの？
+                    </h3>
+                    <p class="faq-answer">
+                        いいえ、キャラクターの向こう側には「実在する個性豊かな本人」がいます。台本のない生配信での素のリアクションや、リアルライブでの息遣い・熱気を感じられるのが大きな違いです。
+                    </p>
+                </div>
+
+                <!-- FAQ 2 -->
+                <div class="faq-item reveal" style="transition-delay: 100ms;">
+                    <h3 class="faq-title">
+                        <i data-lucide="help-circle" width="24" height="24"></i>
+                        若い学生向けのコンテンツでしょ？
+                    </h3>
+                    <p class="faq-answer">
+                        年齢層は非常に幅広いです！本格的なオリジナル楽曲や、高い歌唱力に惹かれてファンになる大人世代（20代〜50代以上）のリスナーも多数います。親子でライブに参戦する方も多いですよ。
+                    </p>
+                </div>
+
+                <!-- FAQ 3 -->
+                <div class="faq-item reveal" style="transition-delay: 200ms;">
+                    <h3 class="faq-title">
+                        <i data-lucide="help-circle" width="24" height="24"></i>
+                        ライブに行かないとファンとは言えない？
+                    </h3>
+                    <p class="faq-answer">
+                        そんなことはありません！YouTubeでの「歌ってみた」視聴や、無料の生配信を楽しむだけでも立派な推し活です。自分のペースで、心地よい距離感で応援できるのがネット発グループの魅力です。
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How to Start -->
+    <section id="howto" class="howto-section">
+        <div class="howto-pattern"></div>
+        
+        <div class="howto-content reveal">
+            <h2 class="howto-title">まずは、その「声」を聴いてみませんか？</h2>
+            <p class="howto-desc">
+                少しでも気になったら、YouTubeを開くだけで新しい世界が待っています。<br>
+                彼らの歌声やトークが、あなたの日常を少しだけ明るくしてくれるはずです。
+            </p>
+            
+            <div class="steps">
+                <div class="step-card">
+                    <div class="step-num num-pink">1</div>
+                    <div class="step-text">
+                        <h4>「歌ってみた」を聴く</h4>
+                        <p>好きな曲のカバーから探してみる</p>
+                    </div>
+                </div>
+                
+                <div class="step-card">
+                    <div class="step-num num-purple">2</div>
+                    <div class="step-text">
+                        <h4>生配信に参加する</h4>
+                        <p>作業用BGMとしてラジオ感覚で聴く</p>
+                    </div>
+                </div>
+
+                <div class="step-card">
+                    <div class="step-num num-blue">3</div>
+                    <div class="step-text">
+                        <h4>リアルライブに参戦</h4>
+                        <p>いつか、実際の姿とその熱気を体感する</p>
+                    </div>
+                </div>
+            </div>
+            
+            <p class="howto-msg">
+                画面越しの出会いが、かけがえのない宝物になりますように！
+            </p>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-brand">
+                <i data-lucide="headphones"></i>
+                <span>2.5次元推し活のセカイ</span>
+            </div>
+            <p class="footer-desc">推し活の魅力を広め、多様な価値観を尊重し合える社会を目指して。</p>
+            <div class="footer-socials">
+                <a href="#" aria-label="Twitter"><i data-lucide="twitter"></i></a>
+                <a href="#" aria-label="Instagram"><i data-lucide="instagram"></i></a>
+                <a href="#" aria-label="Link"><i data-lucide="link"></i></a>
+            </div>
+            <p class="footer-copy">&copy; 2026 推し活のセカイ Project. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+
+        // Navbar scroll effect
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 20) {
+                navbar.classList.add('scrolled');
+                navbar.classList.remove('glass');
+            } else {
+                navbar.classList.remove('scrolled');
+                navbar.classList.add('glass');
+            }
+        });
+
+        // Mobile menu toggle
+        const btn = document.getElementById('mobile-menu-btn');
+        const menu = document.getElementById('mobile-menu');
+
+        btn.addEventListener('click', () => {
+            menu.classList.toggle('active');
+        });
+
+        // Close mobile menu on link click
+        menu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                menu.classList.remove('active');
+            });
+        });
+
+        // Scroll reveal animation
+        function reveal() {
+            var reveals = document.querySelectorAll(".reveal");
+            var windowHeight = window.innerHeight;
+            for (var i = 0; i < reveals.length; i++) {
+                var elementTop = reveals[i].getBoundingClientRect().top;
+                var elementVisible = 100;
+                if (elementTop < windowHeight - elementVisible) {
+                    reveals[i].classList.add("active");
+                }
+            }
+        }
+        window.addEventListener("scroll", reveal);
+        reveal(); // Trigger on initial load
+    </script>
+</body>
+</html>
